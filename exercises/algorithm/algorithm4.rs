@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -50,13 +49,21 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.root.is_none() {
+            self.root = Some(Box::new(TreeNode::new(value)));
+            return;
+        }
+        if let Some(node) = self.root.as_mut() {
+            node.insert(value);
+        }
     }
 
     // Search for a value in the BST
-    fn search(&self, value: T) -> bool {
-        //TODO
-        true
+    fn search(&mut self, value: T) -> bool {
+        if let Some(node) = self.root.as_mut() {
+            return node.search(value);
+        }
+        false
     }
 }
 
@@ -66,7 +73,39 @@ where
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        match value.cmp(&self.value) {
+            Ordering::Less => {
+                match &mut self.left {
+                    None => self.left = Some(Box::new(TreeNode::new(value))),
+                    Some(left) => left.insert(value),
+                }
+            }
+            Ordering::Equal => {}
+            Ordering::Greater => {
+                match &mut self.right {
+                    None => self.right = Some(Box::new(TreeNode::new(value))),
+                    Some(right) => right.insert(value),
+                }
+            }
+        }
+    }
+
+    fn search(&mut self, value: T) -> bool {
+        match value.cmp(&self.value) {
+            Ordering::Less => {
+                match &mut self.left {
+                    None => false,
+                    Some(left) => left.search(value),
+                }
+            }
+            Ordering::Equal => {true}
+            Ordering::Greater => {
+                match &mut self.right {
+                    None => false,
+                    Some(right) => right.search(value),
+                }
+            }
+        }
     }
 }
 
